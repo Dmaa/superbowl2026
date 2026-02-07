@@ -34,14 +34,12 @@ export const useWallet = () => {
   const [positions, setPositions] = useState<Position[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Initialize user and load data
   useEffect(() => {
     const init = async () => {
       try {
         const id = await getOrCreateUserId();
         setUserId(id);
 
-        // Load balance
         const { data: user } = await supabase
           .from("users")
           .select("balance")
@@ -49,18 +47,17 @@ export const useWallet = () => {
           .single();
         if (user) setBalance(Number(user.balance));
 
-        // Load positions
-        const { data: bets } = await supabase
-          .from("bets")
+        const { data: rows } = await supabase
+          .from("positions")
           .select("market_id, market_name, shares, avg_entry_price")
           .eq("user_id", id);
-        if (bets) {
+        if (rows) {
           setPositions(
-            bets.map((b) => ({
-              marketId: b.market_id,
-              marketName: b.market_name,
-              shares: Number(b.shares),
-              avgEntryPrice: Number(b.avg_entry_price),
+            rows.map((r) => ({
+              marketId: r.market_id,
+              marketName: r.market_name,
+              shares: Number(r.shares),
+              avgEntryPrice: Number(r.avg_entry_price),
             }))
           );
         }
@@ -82,7 +79,6 @@ export const useWallet = () => {
 
       const newBalance = parseFloat((balance - cost).toFixed(2));
 
-      // Update balance in DB
       const { error: balErr } = await supabase
         .from("users")
         .update({ balance: newBalance })
@@ -90,6 +86,17 @@ export const useWallet = () => {
       if (balErr) return false;
 
       setBalance(newBalance);
+
+      // Log transaction
+      await supabase.from("transactions").insert({
+        user_id: userId,
+        market_id: marketId,
+        market_name: marketName,
+        action_type: "BUY",
+        shares,
+        price_per_share: yesPrice,
+        total_cost: cost,
+      });
 
       // Upsert position
       const existing = positions.find((p) => p.marketId === marketId);
@@ -99,7 +106,7 @@ export const useWallet = () => {
         const newAvg = totalCost / totalShares;
 
         await supabase
-          .from("bets")
+          .from("positions")
           .update({
             shares: totalShares,
             avg_entry_price: newAvg,
@@ -116,7 +123,7 @@ export const useWallet = () => {
           )
         );
       } else {
-        await supabase.from("bets").insert({
+        await supabase.from("positions").insert({
           user_id: userId,
           market_id: marketId,
           market_name: marketName,
@@ -145,7 +152,6 @@ export const useWallet = () => {
       const proceeds = parseFloat((sharesToSell * currentPrice).toFixed(2));
       const newBalance = parseFloat((balance + proceeds).toFixed(2));
 
-      // Update balance
       const { error: balErr } = await supabase
         .from("users")
         .update({ balance: newBalance })
@@ -154,11 +160,22 @@ export const useWallet = () => {
 
       setBalance(newBalance);
 
+      // Log transaction
+      await supabase.from("transactions").insert({
+        user_id: userId,
+        market_id: marketId,
+        market_name: existing.marketName,
+        action_type: "SELL",
+        shares: sharesToSell,
+        price_per_share: currentPrice,
+        total_cost: proceeds,
+      });
+
       // Update or remove position
       const remaining = existing.shares - sharesToSell;
       if (remaining <= 0) {
         await supabase
-          .from("bets")
+          .from("positions")
           .delete()
           .eq("user_id", userId)
           .eq("market_id", marketId);
@@ -166,7 +183,7 @@ export const useWallet = () => {
         setPositions((prev) => prev.filter((p) => p.marketId !== marketId));
       } else {
         await supabase
-          .from("bets")
+          .from("positions")
           .update({
             shares: remaining,
             updated_at: new Date().toISOString(),

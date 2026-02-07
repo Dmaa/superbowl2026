@@ -3,7 +3,7 @@
 ## Tech Stack
 - **Framework:** Next.js 15 (App Router)
 - **Styling:** Tailwind CSS + Shadcn UI (Lucide Icons)
-- **Database:** Supabase (Postgres) - *Keep it simple: Users table + Bets table.*
+- **Database:** Supabase (Postgres) - *Three tables: `users` (balance), `positions` (current holdings), `transactions` (append-only buy/sell history). Balance is the most important state — protect with CHECK constraints.*
 - **Auth:** Supabase Auth (Email/Password or Anonymous)
 - **Deployment:** Vercel
 
