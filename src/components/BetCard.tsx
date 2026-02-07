@@ -11,8 +11,8 @@ interface BetCardProps {
   market: Market;
   balance: number;
   position?: Position;
-  onBuy: (marketId: string, marketName: string, shares: number, yesPrice: number) => boolean;
-  onSell: (marketId: string, sharesToSell: number, currentPrice: number) => boolean;
+  onBuy: (marketId: string, marketName: string, shares: number, yesPrice: number) => Promise<boolean>;
+  onSell: (marketId: string, sharesToSell: number, currentPrice: number) => Promise<boolean>;
 }
 
 const BetCard = ({ market, balance, position, onBuy, onSell }: BetCardProps) => {
@@ -38,14 +38,14 @@ const BetCard = ({ market, balance, position, onBuy, onSell }: BetCardProps) => 
     effectiveSellShares <= 0 ||
     effectiveSellShares > (position?.shares ?? 0);
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     if (buyDisabled) return;
-    onBuy(market.id, market.groupItemTitle, parsedBuyShares, yesPrice);
+    await onBuy(market.id, market.groupItemTitle, parsedBuyShares, yesPrice);
   };
 
-  const handleSell = () => {
+  const handleSell = async () => {
     if (sellDisabled || !position) return;
-    onSell(market.id, effectiveSellShares, yesPrice);
+    await onSell(market.id, effectiveSellShares, yesPrice);
     setSellShares("");
   };
 

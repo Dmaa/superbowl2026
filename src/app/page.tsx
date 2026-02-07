@@ -7,10 +7,10 @@ import BetCard from "@/components/BetCard";
 const CHAMPION_SLUG = "super-bowl-champion-2026-731";
 
 const Home = () => {
-  const { events, isLoading, error } = useSuperBowlOdds();
-  const { balance, positions, buyYes, sellYes } = useWallet();
+  const { events, isLoading: oddsLoading, error } = useSuperBowlOdds();
+  const { balance, positions, buyYes, sellYes, isLoading: walletLoading } = useWallet();
 
-  if (isLoading) {
+  if (oddsLoading || walletLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-lg text-muted-foreground animate-pulse">
