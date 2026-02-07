@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 
-const ODDS_API_URL = "/api/odds";
+const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
+const ODDS_API_URL = `${basePath}/api/odds`;
 const POLL_INTERVAL = 5000;
 
 export interface Market {
