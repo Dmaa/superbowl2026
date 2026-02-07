@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
+import { getSupabase } from "@/lib/supabase";
 
 const STARTING_BALANCE = 100;
 const USER_ID_KEY = "superbowl2026_user_id";
@@ -17,7 +17,7 @@ const getOrCreateUserId = async (): Promise<string> => {
   const stored = localStorage.getItem(USER_ID_KEY);
   if (stored) return stored;
 
-  const { data, error } = await supabase
+  const { data, error } = await getSupabase()
     .from("users")
     .insert({ balance: STARTING_BALANCE })
     .select("id")
@@ -40,14 +40,14 @@ export const useWallet = () => {
         const id = await getOrCreateUserId();
         setUserId(id);
 
-        const { data: user } = await supabase
+        const { data: user } = await getSupabase()
           .from("users")
           .select("balance")
           .eq("id", id)
           .single();
         if (user) setBalance(Number(user.balance));
 
-        const { data: rows } = await supabase
+        const { data: rows } = await getSupabase()
           .from("positions")
           .select("market_id, market_name, shares, avg_entry_price")
           .eq("user_id", id);
@@ -79,7 +79,7 @@ export const useWallet = () => {
 
       const newBalance = parseFloat((balance - cost).toFixed(2));
 
-      const { error: balErr } = await supabase
+      const { error: balErr } = await getSupabase()
         .from("users")
         .update({ balance: newBalance })
         .eq("id", userId);
@@ -88,7 +88,7 @@ export const useWallet = () => {
       setBalance(newBalance);
 
       // Log transaction
-      await supabase.from("transactions").insert({
+      await getSupabase().from("transactions").insert({
         user_id: userId,
         market_id: marketId,
         market_name: marketName,
@@ -105,7 +105,7 @@ export const useWallet = () => {
         const totalCost = existing.shares * existing.avgEntryPrice + cost;
         const newAvg = totalCost / totalShares;
 
-        await supabase
+        await getSupabase()
           .from("positions")
           .update({
             shares: totalShares,
@@ -123,7 +123,7 @@ export const useWallet = () => {
           )
         );
       } else {
-        await supabase.from("positions").insert({
+        await getSupabase().from("positions").insert({
           user_id: userId,
           market_id: marketId,
           market_name: marketName,
@@ -152,7 +152,7 @@ export const useWallet = () => {
       const proceeds = parseFloat((sharesToSell * currentPrice).toFixed(2));
       const newBalance = parseFloat((balance + proceeds).toFixed(2));
 
-      const { error: balErr } = await supabase
+      const { error: balErr } = await getSupabase()
         .from("users")
         .update({ balance: newBalance })
         .eq("id", userId);
@@ -161,7 +161,7 @@ export const useWallet = () => {
       setBalance(newBalance);
 
       // Log transaction
-      await supabase.from("transactions").insert({
+      await getSupabase().from("transactions").insert({
         user_id: userId,
         market_id: marketId,
         market_name: existing.marketName,
@@ -174,7 +174,7 @@ export const useWallet = () => {
       // Update or remove position
       const remaining = existing.shares - sharesToSell;
       if (remaining <= 0) {
-        await supabase
+        await getSupabase()
           .from("positions")
           .delete()
           .eq("user_id", userId)
@@ -182,7 +182,7 @@ export const useWallet = () => {
 
         setPositions((prev) => prev.filter((p) => p.marketId !== marketId));
       } else {
-        await supabase
+        await getSupabase()
           .from("positions")
           .update({
             shares: remaining,
