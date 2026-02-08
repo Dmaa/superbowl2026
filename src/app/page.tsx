@@ -1,16 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useSuperBowlOdds } from "@/hooks/useSuperBowlOdds";
 import { useWallet } from "@/hooks/useWallet";
-import BetCard from "@/components/BetCard";
-
-const CHAMPION_SLUG = "super-bowl-champion-2026-731";
+import EventGroup from "@/components/EventGroup";
 
 const Home = () => {
+  const router = useRouter();
   const { events, isLoading: oddsLoading, error } = useSuperBowlOdds();
-  const { balance, positions, buyYes, sellYes, isLoading: walletLoading } = useWallet();
+  const { balance, positions, buyYes, sellYes, isLoading: walletLoading, needsLogin } = useWallet();
 
-  if (oddsLoading || walletLoading) {
+  useEffect(() => {
+    if (!walletLoading && needsLogin) {
+      router.push("/login");
+    }
+  }, [walletLoading, needsLogin, router]);
+
+  if (walletLoading || oddsLoading || needsLogin) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <p className="text-lg text-muted-foreground animate-pulse">
@@ -27,9 +34,6 @@ const Home = () => {
       </div>
     );
   }
-
-  const championEvent = events.find((e) => e.slug === CHAMPION_SLUG);
-  const gameMarkets = championEvent?.markets ?? [];
 
   return (
     <div className="min-h-screen bg-background p-6">
@@ -50,19 +54,17 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Bet Cards */}
-        <div className="space-y-4">
-          <h2 className="text-lg font-semibold text-muted-foreground">
-            Game Winner
-          </h2>
-          {gameMarkets.map((market) => (
-            <BetCard
-              key={market.id}
-              market={market}
+        {/* All Events */}
+        <div className="space-y-6">
+          {events.map((event, index) => (
+            <EventGroup
+              key={event.id}
+              event={event}
               balance={balance}
-              position={positions.find((p) => p.marketId === market.id)}
+              positions={positions}
               onBuy={buyYes}
               onSell={sellYes}
+              defaultOpen={index === 0}
             />
           ))}
         </div>

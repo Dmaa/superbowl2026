@@ -13,44 +13,36 @@ export interface Position {
   avgEntryPrice: number;
 }
 
-const getOrCreateUserId = async (): Promise<string> => {
-  const stored = localStorage.getItem(USER_ID_KEY);
-  if (stored) return stored;
-
-  const { data, error } = await getSupabase()
-    .from("users")
-    .insert({ balance: STARTING_BALANCE })
-    .select("id")
-    .single();
-
-  if (error) throw error;
-  localStorage.setItem(USER_ID_KEY, data.id);
-  return data.id;
-};
-
 export const useWallet = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [balance, setBalance] = useState(STARTING_BALANCE);
   const [positions, setPositions] = useState<Position[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [needsLogin, setNeedsLogin] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       try {
-        const id = await getOrCreateUserId();
-        setUserId(id);
+        const stored = localStorage.getItem(USER_ID_KEY);
+        if (!stored) {
+          setNeedsLogin(true);
+          setIsLoading(false);
+          return;
+        }
+
+        setUserId(stored);
 
         const { data: user } = await getSupabase()
           .from("users")
           .select("balance")
-          .eq("id", id)
+          .eq("id", stored)
           .single();
         if (user) setBalance(Number(user.balance));
 
         const { data: rows } = await getSupabase()
           .from("positions")
           .select("market_id, market_name, shares, avg_entry_price")
-          .eq("user_id", id);
+          .eq("user_id", stored);
         if (rows) {
           setPositions(
             rows.map((r) => ({
@@ -212,5 +204,5 @@ export const useWallet = () => {
     [positions]
   );
 
-  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading };
+  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading, needsLogin };
 };
