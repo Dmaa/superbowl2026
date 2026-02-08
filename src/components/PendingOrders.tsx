@@ -1,15 +1,15 @@
 "use client";
 
-import { Clock, X } from "lucide-react";
+import { Clock, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { LimitOrder } from "@/hooks/useLimitOrders";
 
 interface PendingOrdersProps {
   orders: LimitOrder[];
-  onCancel: (orderId: string) => Promise<boolean>;
+  onDelete: (orderId: string) => Promise<boolean>;
 }
 
-const PendingOrders = ({ orders, onCancel }: PendingOrdersProps) => {
+const PendingOrders = ({ orders, onDelete }: PendingOrdersProps) => {
   const pending = orders.filter((o) => o.status === "PENDING");
 
   if (pending.length === 0) return null;
@@ -50,12 +50,13 @@ const PendingOrders = ({ orders, onCancel }: PendingOrdersProps) => {
               )}
             </div>
             <Button
-              onClick={() => onCancel(order.id)}
+              onClick={() => onDelete(order.id)}
               size="sm"
               variant="ghost"
-              className="h-7 w-7 p-0 shrink-0 text-muted-foreground hover:text-destructive"
+              className="h-7 px-2 shrink-0 text-muted-foreground hover:text-destructive text-xs gap-1"
             >
-              <X className="h-4 w-4" />
+              <Trash2 className="h-3.5 w-3.5" />
+              DELETE
             </Button>
           </div>
         ))}

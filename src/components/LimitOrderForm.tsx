@@ -1,21 +1,25 @@
 "use client";
 
 import { useState } from "react";
+import { Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Market } from "@/hooks/useSuperBowlOdds";
 import { Position } from "@/hooks/useWallet";
+import { LimitOrder } from "@/hooks/useLimitOrders";
 
 interface LimitOrderFormProps {
   market: Market;
   balance: number;
   position?: Position;
   lockedShares: number;
+  pendingOrders: LimitOrder[];
   onPlaceBuy: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
   onPlaceSell: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
+  onDelete: (orderId: string) => Promise<boolean>;
 }
 
-const LimitOrderForm = ({ market, balance, position, lockedShares, onPlaceBuy, onPlaceSell }: LimitOrderFormProps) => {
+const LimitOrderForm = ({ market, balance, position, lockedShares, pendingOrders, onPlaceBuy, onPlaceSell, onDelete }: LimitOrderFormProps) => {
   const [buyShares, setBuyShares] = useState("10");
   const [buyPrice, setBuyPrice] = useState("");
   const [sellShares, setSellShares] = useState("");
@@ -73,7 +77,46 @@ const LimitOrderForm = ({ market, balance, position, lockedShares, onPlaceBuy, o
 
   return (
     <div className="space-y-2">
-      {/* Buy limit row */}
+      {/* Pending orders for this market */}
+      {pendingOrders.length > 0 && (
+        <div className="space-y-1">
+          {pendingOrders.map((order) => (
+            <div
+              key={order.id}
+              className="flex items-center gap-2 text-xs rounded bg-muted/20 px-2 py-1.5"
+            >
+              <span
+                className={`shrink-0 rounded px-1.5 py-0.5 font-semibold ${
+                  order.orderType === "BUY"
+                    ? "bg-green-900/50 text-green-400"
+                    : "bg-red-900/50 text-red-400"
+                }`}
+              >
+                {order.orderType}
+              </span>
+              <span className="text-muted-foreground">
+                {order.shares}× @ {order.orderType === "BUY" ? "\u2264" : "\u2265"}
+                {Math.round(order.limitPrice * 100)}\u00A2
+              </span>
+              {order.escrowedAmount > 0 && (
+                <span className="text-muted-foreground">
+                  (${order.escrowedAmount.toFixed(2)})
+                </span>
+              )}
+              <Button
+                onClick={() => onDelete(order.id)}
+                size="sm"
+                variant="ghost"
+                className="h-6 w-6 p-0 shrink-0 ml-auto text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Place buy limit row */}
       <div className="flex items-center gap-2 flex-wrap">
         <Input
           type="number"
@@ -107,11 +150,11 @@ const LimitOrderForm = ({ market, balance, position, lockedShares, onPlaceBuy, o
           size="sm"
           className="h-8 bg-green-600 hover:bg-green-700 text-white font-semibold ml-auto text-xs"
         >
-          BUY LIMIT
+          PLACE BUY
         </Button>
       </div>
 
-      {/* Sell limit row */}
+      {/* Place sell limit row */}
       {position && availableShares > 0 && (
         <div className="flex items-center gap-2 flex-wrap pt-1 border-t border-border/20">
           <Input
@@ -144,7 +187,7 @@ const LimitOrderForm = ({ market, balance, position, lockedShares, onPlaceBuy, o
             variant="destructive"
             className="h-8 font-semibold ml-auto text-xs"
           >
-            SELL LIMIT
+            PLACE SELL
           </Button>
         </div>
       )}

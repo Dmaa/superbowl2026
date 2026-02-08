@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Market } from "@/hooks/useSuperBowlOdds";
 import { Position } from "@/hooks/useWallet";
+import { LimitOrder } from "@/hooks/useLimitOrders";
 import LimitOrderForm from "@/components/LimitOrderForm";
 
 interface CompactMarketRowProps {
@@ -13,12 +14,14 @@ interface CompactMarketRowProps {
   balance: number;
   position?: Position;
   lockedShares: number;
+  pendingOrders: LimitOrder[];
   isExpanded: boolean;
   onToggle: () => void;
   onBuy: (marketId: string, marketName: string, shares: number, yesPrice: number) => Promise<boolean>;
   onSell: (marketId: string, sharesToSell: number, currentPrice: number) => Promise<boolean>;
   onPlaceBuyLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
   onPlaceSellLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
+  onDeleteOrder: (orderId: string) => Promise<boolean>;
 }
 
 const CompactMarketRow = ({
@@ -26,12 +29,14 @@ const CompactMarketRow = ({
   balance,
   position,
   lockedShares,
+  pendingOrders,
   isExpanded,
   onToggle,
   onBuy,
   onSell,
   onPlaceBuyLimit,
   onPlaceSellLimit,
+  onDeleteOrder,
 }: CompactMarketRowProps) => {
   const [buyShares, setBuyShares] = useState("10");
   const [sellShares, setSellShares] = useState("");
@@ -186,8 +191,10 @@ const CompactMarketRow = ({
               balance={balance}
               position={position}
               lockedShares={lockedShares}
+              pendingOrders={pendingOrders}
               onPlaceBuy={onPlaceBuyLimit}
               onPlaceSell={onPlaceSellLimit}
+              onDelete={onDeleteOrder}
             />
           )}
         </div>

@@ -5,16 +5,19 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { SuperBowlEvent, Market } from "@/hooks/useSuperBowlOdds";
 import { Position } from "@/hooks/useWallet";
+import { LimitOrder } from "@/hooks/useLimitOrders";
 import CompactMarketRow from "@/components/CompactMarketRow";
 
 interface EventGroupProps {
   event: SuperBowlEvent;
   balance: number;
   positions: Position[];
+  pendingOrders: LimitOrder[];
   onBuy: (marketId: string, marketName: string, shares: number, yesPrice: number) => Promise<boolean>;
   onSell: (marketId: string, sharesToSell: number, currentPrice: number) => Promise<boolean>;
   onPlaceBuyLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
   onPlaceSellLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
+  onDeleteOrder: (orderId: string) => Promise<boolean>;
   getLockedShares: (marketId: string) => number;
   defaultOpen?: boolean;
 }
@@ -30,10 +33,12 @@ const EventGroup = ({
   event,
   balance,
   positions,
+  pendingOrders,
   onBuy,
   onSell,
   onPlaceBuyLimit,
   onPlaceSellLimit,
+  onDeleteOrder,
   getLockedShares,
   defaultOpen = false,
 }: EventGroupProps) => {
@@ -84,6 +89,7 @@ const EventGroup = ({
               balance={balance}
               position={positions.find((p) => p.marketId === market.id)}
               lockedShares={getLockedShares(market.id)}
+              pendingOrders={pendingOrders.filter((o) => o.marketId === market.id)}
               isExpanded={expandedMarketId === market.id}
               onToggle={() =>
                 setExpandedMarketId(expandedMarketId === market.id ? null : market.id)
@@ -92,6 +98,7 @@ const EventGroup = ({
               onSell={onSell}
               onPlaceBuyLimit={onPlaceBuyLimit}
               onPlaceSellLimit={onPlaceSellLimit}
+              onDeleteOrder={onDeleteOrder}
             />
           ))}
         </div>

@@ -87,8 +87,10 @@ const Home = () => {
               positions={positions}
               onBuy={buyYes}
               onSell={sellYes}
+              pendingOrders={limitOrders.filter((o) => o.status === "PENDING")}
               onPlaceBuyLimit={placeBuyLimit}
               onPlaceSellLimit={placeSellLimit}
+              onDeleteOrder={cancelOrder}
               getLockedShares={getLockedShares}
               defaultOpen={index === 0}
             />
@@ -96,7 +98,7 @@ const Home = () => {
         </div>
 
         {/* Pending Orders */}
-        <PendingOrders orders={limitOrders} onCancel={cancelOrder} />
+        <PendingOrders orders={limitOrders} onDelete={cancelOrder} />
 
         {/* Positions */}
         {positions.length > 0 && (
