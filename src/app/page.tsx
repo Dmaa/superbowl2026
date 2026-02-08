@@ -1,15 +1,34 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useSuperBowlOdds } from "@/hooks/useSuperBowlOdds";
 import { useWallet } from "@/hooks/useWallet";
+import { useLimitOrders } from "@/hooks/useLimitOrders";
 import EventGroup from "@/components/EventGroup";
+import PendingOrders from "@/components/PendingOrders";
 
 const Home = () => {
   const router = useRouter();
   const { events, isLoading: oddsLoading, error } = useSuperBowlOdds();
-  const { balance, positions, buyYes, sellYes, isLoading: walletLoading, needsLogin, displayName } = useWallet();
+  const {
+    balance, positions, buyYes, sellYes, isLoading: walletLoading,
+    needsLogin, displayName, userId, refreshBalance, refreshPositions,
+  } = useWallet();
+  const {
+    limitOrders, placeBuyLimit, placeSellLimit, cancelOrder,
+    checkAndFillOrders, getLockedShares,
+  } = useLimitOrders({ userId, refreshBalance, refreshPositions });
+
+  const eventsRef = useRef(events);
+  eventsRef.current = events;
+
+  // Check limit orders on every price update
+  useEffect(() => {
+    if (events.length > 0 && userId) {
+      checkAndFillOrders(events);
+    }
+  }, [events, userId, checkAndFillOrders]);
 
   useEffect(() => {
     if (!walletLoading && needsLogin) {
@@ -68,10 +87,16 @@ const Home = () => {
               positions={positions}
               onBuy={buyYes}
               onSell={sellYes}
+              onPlaceBuyLimit={placeBuyLimit}
+              onPlaceSellLimit={placeSellLimit}
+              getLockedShares={getLockedShares}
               defaultOpen={index === 0}
             />
           ))}
         </div>
+
+        {/* Pending Orders */}
+        <PendingOrders orders={limitOrders} onCancel={cancelOrder} />
 
         {/* Positions */}
         {positions.length > 0 && (

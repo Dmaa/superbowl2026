@@ -13,6 +13,9 @@ interface EventGroupProps {
   positions: Position[];
   onBuy: (marketId: string, marketName: string, shares: number, yesPrice: number) => Promise<boolean>;
   onSell: (marketId: string, sharesToSell: number, currentPrice: number) => Promise<boolean>;
+  onPlaceBuyLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
+  onPlaceSellLimit: (marketId: string, marketName: string, shares: number, limitPrice: number) => Promise<boolean>;
+  getLockedShares: (marketId: string) => number;
   defaultOpen?: boolean;
 }
 
@@ -23,7 +26,17 @@ const sortByPrice = (markets: Market[]): Market[] =>
     return priceB - priceA;
   });
 
-const EventGroup = ({ event, balance, positions, onBuy, onSell, defaultOpen = false }: EventGroupProps) => {
+const EventGroup = ({
+  event,
+  balance,
+  positions,
+  onBuy,
+  onSell,
+  onPlaceBuyLimit,
+  onPlaceSellLimit,
+  getLockedShares,
+  defaultOpen = false,
+}: EventGroupProps) => {
   const [isOpen, setIsOpen] = useState(defaultOpen);
   const [expandedMarketId, setExpandedMarketId] = useState<string | null>(null);
 
@@ -70,12 +83,15 @@ const EventGroup = ({ event, balance, positions, onBuy, onSell, defaultOpen = fa
               market={market}
               balance={balance}
               position={positions.find((p) => p.marketId === market.id)}
+              lockedShares={getLockedShares(market.id)}
               isExpanded={expandedMarketId === market.id}
               onToggle={() =>
                 setExpandedMarketId(expandedMarketId === market.id ? null : market.id)
               }
               onBuy={onBuy}
               onSell={onSell}
+              onPlaceBuyLimit={onPlaceBuyLimit}
+              onPlaceSellLimit={onPlaceSellLimit}
             />
           ))}
         </div>

@@ -207,5 +207,33 @@ export const useWallet = () => {
     [positions]
   );
 
-  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading, needsLogin, displayName };
+  const refreshBalance = useCallback(async () => {
+    if (!userId) return;
+    const { data } = await getSupabase()
+      .from("users")
+      .select("balance")
+      .eq("id", userId)
+      .single();
+    if (data) setBalance(Number(data.balance));
+  }, [userId]);
+
+  const refreshPositions = useCallback(async () => {
+    if (!userId) return;
+    const { data: rows } = await getSupabase()
+      .from("positions")
+      .select("market_id, market_name, shares, avg_entry_price")
+      .eq("user_id", userId);
+    if (rows) {
+      setPositions(
+        rows.map((r) => ({
+          marketId: r.market_id,
+          marketName: r.market_name,
+          shares: Number(r.shares),
+          avgEntryPrice: Number(r.avg_entry_price),
+        }))
+      );
+    }
+  }, [userId]);
+
+  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading, needsLogin, displayName, userId, refreshBalance, refreshPositions };
 };
