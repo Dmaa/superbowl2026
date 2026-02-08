@@ -37,7 +37,7 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="mx-auto max-w-2xl space-y-6">
+      <div className="mx-auto max-w-6xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between rounded-xl border border-border/50 bg-card p-4">
           <div>
@@ -59,7 +59,7 @@ const Home = () => {
         </div>
 
         {/* All Events */}
-        <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
           {events.map((event, index) => (
             <EventGroup
               key={event.id}
