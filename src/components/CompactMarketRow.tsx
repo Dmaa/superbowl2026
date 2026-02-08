@@ -57,13 +57,6 @@ const CompactMarketRow = ({
     setSellShares("");
   };
 
-  const handleQuickBuy = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    const quickShares = 10;
-    const cost = quickShares * yesPrice;
-    if (cost > balance) return;
-    await onBuy(market.id, label, quickShares, yesPrice);
-  };
 
   return (
     <div>
@@ -86,14 +79,6 @@ const CompactMarketRow = ({
         <span className="ml-auto shrink-0 font-mono font-semibold text-green-400">
           {yesCents}¢
         </span>
-        <Button
-          size="sm"
-          onClick={handleQuickBuy}
-          disabled={10 * yesPrice > balance}
-          className="h-6 px-2 text-xs bg-green-600 hover:bg-green-700 text-white font-semibold shrink-0"
-        >
-          BUY
-        </Button>
       </button>
 
       {/* Expanded buy/sell form */}
