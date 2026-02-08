@@ -84,6 +84,12 @@ const CompactMarketRow = ({
       {/* Expanded buy/sell form */}
       {isExpanded && (
         <div className="px-3 pb-3 pt-1 space-y-2 border-t border-border/20 ml-5">
+          {/* Position info */}
+          {position && (
+            <div className="text-xs text-muted-foreground">
+              You own <span className="text-green-400 font-medium">{position.shares % 1 === 0 ? position.shares : position.shares.toFixed(1)} shares</span> @ {Math.round(position.avgEntryPrice * 100)}¢ avg
+            </div>
+          )}
           {/* Buy row */}
           <div className="flex items-center gap-2">
             <Input
