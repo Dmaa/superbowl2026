@@ -28,10 +28,7 @@ const CompactMarketRow = ({
 }: CompactMarketRowProps) => {
   const [buyShares, setBuyShares] = useState("10");
   const [sellShares, setSellShares] = useState("");
-  const [flash, setFlash] = useState(false);
-
   const label = market.groupItemTitle || market.question;
-  const outcomeName = market.outcomes[0] ?? "Yes";
   const yesPrice = parseFloat(market.outcomePrices[0]);
   const yesCents = Math.round(yesPrice * 100);
 
@@ -65,17 +62,11 @@ const CompactMarketRow = ({
     const quickShares = 10;
     const cost = quickShares * yesPrice;
     if (cost > balance) return;
-    const success = await onBuy(market.id, label, quickShares, yesPrice);
-    if (success) {
-      setFlash(true);
-      setTimeout(() => setFlash(false), 500);
-    }
+    await onBuy(market.id, label, quickShares, yesPrice);
   };
 
   return (
-    <div
-      className={`transition-colors ${flash ? "bg-green-900/30" : ""}`}
-    >
+    <div>
       {/* Collapsed row */}
       <button
         onClick={onToggle}
@@ -89,7 +80,7 @@ const CompactMarketRow = ({
         <span className="truncate font-medium">{label}</span>
         {position && (
           <span className="shrink-0 rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
-            {position.shares.toFixed(1)}
+            {position.shares % 1 === 0 ? position.shares : position.shares.toFixed(1)} shares
           </span>
         )}
         <span className="ml-auto shrink-0 font-mono font-semibold text-green-400">
@@ -128,7 +119,7 @@ const CompactMarketRow = ({
               size="sm"
               className="h-8 bg-green-600 hover:bg-green-700 text-white font-semibold ml-auto"
             >
-              BUY {outcomeName.toUpperCase()}
+              BUY
             </Button>
           </div>
 
