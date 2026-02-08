@@ -89,20 +89,19 @@ const LeaderboardPage = () => {
         {/* Table */}
         <div className="rounded-xl border border-border/50 bg-card overflow-hidden">
           {/* Desktop table header */}
-          <div className="hidden md:grid grid-cols-[2rem_1fr_6.5rem_6rem_6.5rem_3.5rem] gap-3 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div className="hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem_3.5rem] gap-3 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
             <span>#</span>
             <span>Player</span>
-            <span className="text-right">Portfolio</span>
             <span className="text-right">Cash</span>
+            <span className="text-right">Portfolio</span>
             <span className="text-right">Unreal. P/L</span>
             <span className="text-right">Pos.</span>
           </div>
 
           {/* Mobile table header */}
-          <div className="grid md:hidden grid-cols-3 gap-2 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div className="grid md:hidden grid-cols-[1fr_5.5rem] gap-2 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
             <span>Player</span>
-            <span className="text-right">Portfolio</span>
-            <span className="text-right">P/L</span>
+            <span className="text-right">Cash</span>
           </div>
 
           {/* Rows */}
@@ -139,15 +138,15 @@ const LeaderboardPage = () => {
                 <div key={`${entry.displayName}-${i}`}>
                   {/* Desktop row */}
                   <div
-                    className={`hidden md:grid grid-cols-[2rem_1fr_6.5rem_6rem_6.5rem_3.5rem] gap-3 px-4 py-3 text-sm items-center ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
+                    className={`hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem_3.5rem] gap-3 px-4 py-3 text-sm items-center ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
                   >
                     <span className={`font-bold ${rankColor}`}>{rank}</span>
                     <span className="font-medium truncate">{entry.displayName}</span>
                     <span className="text-right font-bold text-green-400 font-mono">
-                      ${entry.totalValue.toFixed(2)}
+                      ${entry.balance.toFixed(2)}
                     </span>
                     <span className="text-right text-muted-foreground font-mono">
-                      ${entry.balance.toFixed(2)}
+                      ${entry.totalValue.toFixed(2)}
                     </span>
                     <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
                       {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
@@ -161,21 +160,21 @@ const LeaderboardPage = () => {
                   <div
                     className={`md:hidden px-4 py-3 text-sm ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
                   >
-                    <div className="grid grid-cols-3 gap-2 items-center">
+                    <div className="grid grid-cols-[1fr_5.5rem] gap-2 items-center">
                       <div className="flex items-center gap-2 min-w-0">
                         <span className={`font-bold shrink-0 ${rankColor}`}>{rank}</span>
                         <span className="font-medium truncate">{entry.displayName}</span>
                       </div>
                       <span className="text-right font-bold text-green-400 font-mono">
-                        ${entry.totalValue.toFixed(2)}
-                      </span>
-                      <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
-                        {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                        ${entry.balance.toFixed(2)}
                       </span>
                     </div>
                     <div className="flex gap-3 mt-1 ml-6 text-xs text-muted-foreground">
-                      <span>Cash: ${entry.balance.toFixed(2)}</span>
-                      <span>{entry.positionCount} position{entry.positionCount !== 1 ? "s" : ""}</span>
+                      <span>Portfolio: ${entry.totalValue.toFixed(2)}</span>
+                      <span className={pnlPositive ? "text-green-400/70" : "text-red-400/70"}>
+                        P/L: {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                      </span>
+                      <span>{entry.positionCount} pos.</span>
                     </div>
                   </div>
                 </div>
