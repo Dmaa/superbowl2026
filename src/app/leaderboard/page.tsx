@@ -6,13 +6,14 @@ import { Trophy, ArrowLeft } from "lucide-react";
 
 const basePath = process.env.__NEXT_ROUTER_BASEPATH || "";
 
+const STARTING_BALANCE = 100;
+
 interface LeaderboardEntry {
   displayName: string;
   balance: number;
   positionValue: number;
   unrealizedPnl: number;
   totalValue: number;
-
 }
 
 const POLL_INTERVAL = 30_000;
@@ -94,7 +95,7 @@ const LeaderboardPage = () => {
             <span>Player</span>
             <span className="text-right">Cash</span>
             <span className="text-right">Portfolio</span>
-            <span className="text-right">Unreal. P/L</span>
+            <span className="text-right">Total P/L</span>
           </div>
 
           {/* Mobile table header */}
@@ -111,7 +112,8 @@ const LeaderboardPage = () => {
           ) : (
             entries.map((entry, i) => {
               const rank = i + 1;
-              const pnlPositive = entry.unrealizedPnl >= 0;
+              const totalPnl = entry.totalValue - STARTING_BALANCE;
+              const pnlPositive = totalPnl >= 0;
 
               const rankColor =
                 rank === 1
@@ -148,7 +150,7 @@ const LeaderboardPage = () => {
                       ${entry.totalValue.toFixed(2)}
                     </span>
                     <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
-                      {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                      {pnlPositive ? "+" : ""}${totalPnl.toFixed(2)}
                     </span>
                   </div>
 
@@ -168,7 +170,7 @@ const LeaderboardPage = () => {
                     <div className="flex gap-3 mt-1 ml-6 text-xs text-muted-foreground">
                       <span>Portfolio: ${entry.totalValue.toFixed(2)}</span>
                       <span className={pnlPositive ? "text-green-400/70" : "text-red-400/70"}>
-                        P/L: {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                        P/L: {pnlPositive ? "+" : ""}${totalPnl.toFixed(2)}
                       </span>
                     </div>
                   </div>

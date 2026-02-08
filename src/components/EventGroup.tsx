@@ -65,9 +65,9 @@ const EventGroup = ({
           <ChevronRight className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
         )}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-sm truncate">{event.title}</span>
-            <span className="text-xs text-muted-foreground shrink-0 ml-auto">
+          <div className="flex items-start gap-2 justify-between">
+            <span className="font-semibold text-sm">{event.title}</span>
+            <span className="text-xs text-muted-foreground shrink-0 mt-0.5">
               {event.markets.length} market{event.markets.length !== 1 ? "s" : ""}
             </span>
           </div>
