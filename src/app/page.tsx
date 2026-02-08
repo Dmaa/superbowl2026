@@ -9,7 +9,7 @@ import EventGroup from "@/components/EventGroup";
 const Home = () => {
   const router = useRouter();
   const { events, isLoading: oddsLoading, error } = useSuperBowlOdds();
-  const { balance, positions, buyYes, sellYes, isLoading: walletLoading, needsLogin } = useWallet();
+  const { balance, positions, buyYes, sellYes, isLoading: walletLoading, needsLogin, displayName } = useWallet();
 
   useEffect(() => {
     if (!walletLoading && needsLogin) {
@@ -41,9 +41,13 @@ const Home = () => {
         {/* Header */}
         <div className="flex items-center justify-between rounded-xl border border-border/50 bg-card p-4">
           <div>
-            <h1 className="text-xl font-bold">Super Bowl LX</h1>
+            {displayName && (
+              <p className="text-lg font-light tracking-wide text-green-400">
+                Hello, <span className="font-semibold">{displayName}</span>
+              </p>
+            )}
             <p className="text-sm text-muted-foreground">
-              Seahawks vs Patriots — Feb 8, 2026
+              Super Bowl LX — Feb 8, 2026
             </p>
           </div>
           <div className="text-right">

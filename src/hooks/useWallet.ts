@@ -5,6 +5,7 @@ import { getSupabase } from "@/lib/supabase";
 
 const STARTING_BALANCE = 100;
 const USER_ID_KEY = "superbowl2026_user_id";
+const USER_NAME_KEY = "superbowl2026_user_name";
 
 export interface Position {
   marketId: string;
@@ -19,6 +20,7 @@ export const useWallet = () => {
   const [positions, setPositions] = useState<Position[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [needsLogin, setNeedsLogin] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(null);
 
   useEffect(() => {
     const init = async () => {
@@ -31,6 +33,7 @@ export const useWallet = () => {
         }
 
         setUserId(stored);
+        setDisplayName(localStorage.getItem(USER_NAME_KEY));
 
         const { data: user } = await getSupabase()
           .from("users")
@@ -204,5 +207,5 @@ export const useWallet = () => {
     [positions]
   );
 
-  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading, needsLogin };
+  return { balance, positions, buyYes, sellYes, portfolioValue, isLoading, needsLogin, displayName };
 };

@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getSupabase } from "@/lib/supabase";
 
 const USER_ID_KEY = "superbowl2026_user_id";
+const USER_NAME_KEY = "superbowl2026_user_name";
 const STARTING_BALANCE = 100;
 
 interface ExistingUser {
@@ -56,6 +57,7 @@ const LoginPage = () => {
         if (insertErr) throw insertErr;
 
         localStorage.setItem(USER_ID_KEY, newUser.id);
+        localStorage.setItem(USER_NAME_KEY, trimmed);
         router.push("/");
       }
     } catch (err) {
@@ -69,6 +71,7 @@ const LoginPage = () => {
   const handleContinue = () => {
     if (!existingUser) return;
     localStorage.setItem(USER_ID_KEY, existingUser.id);
+    localStorage.setItem(USER_NAME_KEY, existingUser.display_name);
     router.push("/");
   };
 
