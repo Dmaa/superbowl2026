@@ -42,8 +42,12 @@ const CompactMarketRow = ({
   const [sellShares, setSellShares] = useState("");
   const [orderTab, setOrderTab] = useState<"market" | "limit">("market");
   const label = market.groupItemTitle || market.question;
+  const yesLabel = market.outcomes[0] ?? "Yes";
+  const noLabel = market.outcomes[1] ?? "No";
   const yesPrice = parseFloat(market.outcomePrices[0]);
+  const noPrice = parseFloat(market.outcomePrices[1] ?? "0");
   const yesCents = Math.round(yesPrice * 100);
+  const noCents = Math.round(noPrice * 100);
 
   const availableShares = position ? position.shares - lockedShares : 0;
 
@@ -90,9 +94,10 @@ const CompactMarketRow = ({
             {position.shares % 1 === 0 ? position.shares : position.shares.toFixed(1)} shares
           </span>
         )}
-        <span className="ml-auto shrink-0 font-mono font-semibold text-green-400">
-          {yesCents}¢
-        </span>
+        <div className="ml-auto shrink-0 flex items-center gap-2 font-mono text-xs font-semibold">
+          <span className="text-green-400">{yesLabel} {yesCents}¢</span>
+          <span className="text-red-400">{noLabel} {noCents}¢</span>
+        </div>
       </button>
 
       {/* Expanded buy/sell form */}
