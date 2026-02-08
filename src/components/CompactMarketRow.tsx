@@ -30,6 +30,7 @@ const CompactMarketRow = ({
   const [sellShares, setSellShares] = useState("");
   const [flash, setFlash] = useState(false);
 
+  const label = market.groupItemTitle || market.question;
   const yesPrice = parseFloat(market.outcomePrices[0]);
   const yesCents = Math.round(yesPrice * 100);
 
@@ -49,7 +50,7 @@ const CompactMarketRow = ({
 
   const handleBuy = async () => {
     if (buyDisabled) return;
-    await onBuy(market.id, market.groupItemTitle, parsedBuyShares, yesPrice);
+    await onBuy(market.id, label, parsedBuyShares, yesPrice);
   };
 
   const handleSell = async () => {
@@ -63,7 +64,7 @@ const CompactMarketRow = ({
     const quickShares = 10;
     const cost = quickShares * yesPrice;
     if (cost > balance) return;
-    const success = await onBuy(market.id, market.groupItemTitle, quickShares, yesPrice);
+    const success = await onBuy(market.id, label, quickShares, yesPrice);
     if (success) {
       setFlash(true);
       setTimeout(() => setFlash(false), 500);
@@ -84,7 +85,7 @@ const CompactMarketRow = ({
         ) : (
           <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
         )}
-        <span className="truncate font-medium">{market.groupItemTitle}</span>
+        <span className="truncate font-medium">{label}</span>
         {position && (
           <span className="shrink-0 rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
             {position.shares.toFixed(1)}

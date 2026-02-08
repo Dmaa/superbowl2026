@@ -31,7 +31,7 @@ const EventGroup = ({ event, balance, positions, onBuy, onSell, defaultOpen = fa
   const top3 = sorted.slice(0, 3);
 
   const previewLine = top3
-    .map((m) => `${m.groupItemTitle} ${Math.round(parseFloat(m.outcomePrices[0]) * 100)}¢`)
+    .map((m) => `${m.groupItemTitle || m.question} ${Math.round(parseFloat(m.outcomePrices[0]) * 100)}¢`)
     .join(" · ");
 
   return (
