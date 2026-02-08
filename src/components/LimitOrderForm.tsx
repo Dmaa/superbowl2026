@@ -178,7 +178,7 @@ const LimitOrderForm = ({
             step="1"
             value={buyPrice}
             onChange={(e) => setBuyPrice(e.target.value)}
-            className="w-16 h-8 text-sm"
+            className="w-20 h-8 text-sm"
             placeholder="price"
           />
           <span className="text-xs text-muted-foreground">¢</span>
