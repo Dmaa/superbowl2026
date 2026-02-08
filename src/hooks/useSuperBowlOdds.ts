@@ -61,6 +61,29 @@ const parseMarket = (raw: Record<string, unknown>): Market => ({
   description: raw.description as string,
 });
 
+// Single-market events with non-Yes/No outcomes (e.g. coin toss: Heads/Tails)
+// get expanded into one virtual market per outcome so each gets its own row.
+const expandMarket = (market: Market): Market[] => {
+  const isYesNo =
+    market.outcomes.length === 2 &&
+    market.outcomes[0].toLowerCase() === "yes" &&
+    market.outcomes[1].toLowerCase() === "no";
+
+  if (isYesNo) return [market];
+
+  return market.outcomes.map((outcome, i) => ({
+    ...market,
+    id: `${market.id}_${i}`,
+    groupItemTitle: outcome,
+    outcomes: ["Yes", "No"],
+    outcomePrices: [
+      market.outcomePrices[i] ?? "0",
+      String(1 - parseFloat(market.outcomePrices[i] ?? "0")),
+    ],
+    clobTokenIds: [market.clobTokenIds[i] ?? ""],
+  }));
+};
+
 const parseEvent = (raw: Record<string, unknown>): SuperBowlEvent => ({
   id: raw.id as string,
   title: raw.title as string,
@@ -72,7 +95,8 @@ const parseEvent = (raw: Record<string, unknown>): SuperBowlEvent => ({
   volume: raw.volume as number,
   markets: ((raw.markets as Record<string, unknown>[]) || [])
     .map(parseMarket)
-    .filter((m) => m.active && !m.closed),
+    .filter((m) => m.active && !m.closed)
+    .flatMap(expandMarket),
 });
 
 export const useSuperBowlOdds = () => {
