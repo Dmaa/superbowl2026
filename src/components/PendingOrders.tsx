@@ -39,7 +39,7 @@ const PendingOrders = ({ orders, onDelete }: PendingOrdersProps) => {
                 {order.orderType}
               </span>
               <span className={`shrink-0 rounded px-1 py-0.5 text-[10px] font-semibold ${
-                isNo ? "bg-red-900/40 text-red-400" : "bg-green-900/40 text-green-400"
+                isNo ? "bg-slate-700/60 text-slate-300" : "bg-yellow-900/50 text-yellow-400"
               }`}>
                 {isNo ? "NO" : "YES"}
               </span>

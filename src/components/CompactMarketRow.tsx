@@ -108,18 +108,18 @@ const CompactMarketRow = ({
         )}
         <span className="truncate font-medium">{label}</span>
         {position && (
-          <span className="shrink-0 rounded bg-green-900/50 px-1.5 py-0.5 text-xs text-green-400">
+          <span className="shrink-0 rounded bg-yellow-900/50 px-1.5 py-0.5 text-xs text-yellow-400">
             {position.shares % 1 === 0 ? position.shares : position.shares.toFixed(1)} Yes
           </span>
         )}
         {noPosition && (
-          <span className="shrink-0 rounded bg-red-900/50 px-1.5 py-0.5 text-xs text-red-400">
+          <span className="shrink-0 rounded bg-slate-700/50 px-1.5 py-0.5 text-xs text-slate-300">
             {noPosition.shares % 1 === 0 ? noPosition.shares : noPosition.shares.toFixed(1)} No
           </span>
         )}
         <div className="ml-auto shrink-0 flex items-center gap-2 font-mono text-xs font-semibold">
-          <span className="text-green-400">Yes {yesCents}¢</span>
-          <span className="text-red-400">No {noCents}¢</span>
+          <span className="text-yellow-400">Yes {yesCents}¢</span>
+          <span className="text-slate-300">No {noCents}¢</span>
         </div>
       </button>
 
@@ -129,16 +129,16 @@ const CompactMarketRow = ({
           {/* Position info */}
           {position && (
             <div className="text-xs text-muted-foreground">
-              <span className="text-green-400 font-medium">Yes:</span>{" "}
+              <span className="text-yellow-400 font-medium">Yes:</span>{" "}
               {position.shares % 1 === 0 ? position.shares : position.shares.toFixed(1)} shares @ {Math.round(position.avgEntryPrice * 100)}¢ avg
-              {lockedShares > 0 && <span className="text-yellow-400 ml-1">({lockedShares} locked)</span>}
+              {lockedShares > 0 && <span className="text-orange-400 ml-1">({lockedShares} locked)</span>}
             </div>
           )}
           {noPosition && (
             <div className="text-xs text-muted-foreground">
-              <span className="text-red-400 font-medium">No:</span>{" "}
+              <span className="text-slate-300 font-medium">No:</span>{" "}
               {noPosition.shares % 1 === 0 ? noPosition.shares : noPosition.shares.toFixed(1)} shares @ {Math.round(noPosition.avgEntryPrice * 100)}¢ avg
-              {noLockedShares > 0 && <span className="text-yellow-400 ml-1">({noLockedShares} locked)</span>}
+              {noLockedShares > 0 && <span className="text-orange-400 ml-1">({noLockedShares} locked)</span>}
             </div>
           )}
 
@@ -148,7 +148,7 @@ const CompactMarketRow = ({
               onClick={() => setOrderTab("market")}
               className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                 orderTab === "market"
-                  ? "bg-green-600 text-white"
+                  ? "bg-white/15 text-foreground"
                   : "bg-muted/30 text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -158,7 +158,7 @@ const CompactMarketRow = ({
               onClick={() => setOrderTab("limit")}
               className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
                 orderTab === "limit"
-                  ? "bg-green-600 text-white"
+                  ? "bg-white/15 text-foreground"
                   : "bg-muted/30 text-muted-foreground hover:text-foreground"
               }`}
             >
@@ -174,7 +174,7 @@ const CompactMarketRow = ({
                   onClick={() => setBuySide("yes")}
                   className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
                     buySide === "yes"
-                      ? "bg-green-600 text-white"
+                      ? "bg-yellow-500 text-black"
                       : "bg-muted/30 text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -184,7 +184,7 @@ const CompactMarketRow = ({
                   onClick={() => setBuySide("no")}
                   className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
                     buySide === "no"
-                      ? "bg-red-600 text-white"
+                      ? "bg-slate-400 text-black"
                       : "bg-muted/30 text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -210,11 +210,7 @@ const CompactMarketRow = ({
                   onClick={handleBuy}
                   disabled={buyDisabled}
                   size="sm"
-                  className={`h-8 font-semibold ml-auto ${
-                    buySide === "yes"
-                      ? "bg-green-600 hover:bg-green-700 text-white"
-                      : "bg-red-600 hover:bg-red-700 text-white"
-                  }`}
+                  className="h-8 font-semibold ml-auto bg-green-600 hover:bg-green-700 text-white"
                 >
                   BUY {buySide === "yes" ? "YES" : "NO"}
                 </Button>
@@ -223,7 +219,7 @@ const CompactMarketRow = ({
               {/* Sell Yes row */}
               {position && availableYes > 0 && (
                 <div className="flex items-center gap-2 pt-1 border-t border-border/20">
-                  <span className="text-xs text-green-400 font-medium w-7">Yes</span>
+                  <span className="text-xs text-yellow-400 font-medium w-7">Yes</span>
                   <Input
                     type="number"
                     min="0"
@@ -240,8 +236,7 @@ const CompactMarketRow = ({
                     onClick={handleSellYes}
                     disabled={sellYesDisabled}
                     size="sm"
-                    variant="destructive"
-                    className="h-8 font-semibold ml-auto"
+                    className="h-8 font-semibold ml-auto bg-red-600 hover:bg-red-700 text-white"
                   >
                     SELL YES
                   </Button>
@@ -251,7 +246,7 @@ const CompactMarketRow = ({
               {/* Sell No row */}
               {noPosition && availableNo > 0 && (
                 <div className="flex items-center gap-2 pt-1 border-t border-border/20">
-                  <span className="text-xs text-red-400 font-medium w-7">No</span>
+                  <span className="text-xs text-slate-300 font-medium w-7">No</span>
                   <Input
                     type="number"
                     min="0"
@@ -268,8 +263,7 @@ const CompactMarketRow = ({
                     onClick={handleSellNo}
                     disabled={sellNoDisabled}
                     size="sm"
-                    variant="destructive"
-                    className="h-8 font-semibold ml-auto"
+                    className="h-8 font-semibold ml-auto bg-red-600 hover:bg-red-700 text-white"
                   >
                     SELL NO
                   </Button>

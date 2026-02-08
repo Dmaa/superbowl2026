@@ -107,7 +107,7 @@ const LimitOrderForm = ({
                   {order.orderType}
                 </span>
                 <span className={`shrink-0 text-[10px] font-semibold rounded px-1 py-0.5 ${
-                  isNo ? "bg-red-900/40 text-red-400" : "bg-green-900/40 text-green-400"
+                  isNo ? "bg-slate-700/60 text-slate-300" : "bg-yellow-900/50 text-yellow-400"
                 }`}>
                   {isNo ? "NO" : "YES"}
                 </span>
@@ -140,7 +140,7 @@ const LimitOrderForm = ({
           onClick={() => onBuySideChange("yes")}
           className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
             buySide === "yes"
-              ? "bg-green-600 text-white"
+              ? "bg-yellow-500 text-black"
               : "bg-muted/30 text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -150,7 +150,7 @@ const LimitOrderForm = ({
           onClick={() => onBuySideChange("no")}
           className={`px-3 py-1 text-xs font-semibold rounded transition-colors ${
             buySide === "no"
-              ? "bg-red-600 text-white"
+              ? "bg-slate-400 text-black"
               : "bg-muted/30 text-muted-foreground hover:text-foreground"
           }`}
         >
@@ -190,11 +190,7 @@ const LimitOrderForm = ({
           onClick={handlePlaceBuy}
           disabled={!buyValid || submitting}
           size="sm"
-          className={`h-8 font-semibold ml-auto text-xs ${
-            buySide === "yes"
-              ? "bg-green-600 hover:bg-green-700 text-white"
-              : "bg-red-600 hover:bg-red-700 text-white"
-          }`}
+          className="h-8 font-semibold ml-auto text-xs bg-green-600 hover:bg-green-700 text-white"
         >
           PLACE {buySide === "yes" ? "YES" : "NO"}
         </Button>
@@ -211,7 +207,7 @@ const LimitOrderForm = ({
                 onClick={() => { setSellSide("yes"); setSellShares(""); }}
                 className={`px-2 py-0.5 text-[10px] font-semibold rounded transition-colors ${
                   sellSide === "yes"
-                    ? "bg-green-600 text-white"
+                    ? "bg-yellow-500 text-black"
                     : "bg-muted/30 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -221,7 +217,7 @@ const LimitOrderForm = ({
                 onClick={() => { setSellSide("no"); setSellShares(""); }}
                 className={`px-2 py-0.5 text-[10px] font-semibold rounded transition-colors ${
                   sellSide === "no"
-                    ? "bg-red-600 text-white"
+                    ? "bg-slate-400 text-black"
                     : "bg-muted/30 text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -230,7 +226,7 @@ const LimitOrderForm = ({
             </div>
           )}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className={`text-xs font-medium w-7 ${sellSide === "yes" ? "text-green-400" : "text-red-400"}`}>
+            <span className={`text-xs font-medium w-7 ${sellSide === "yes" ? "text-yellow-400" : "text-slate-300"}`}>
               {sellSide === "yes" ? "Yes" : "No"}
             </span>
             <Input
@@ -251,7 +247,7 @@ const LimitOrderForm = ({
                 step="1"
                 value={sellPrice}
                 onChange={(e) => setSellPrice(e.target.value)}
-                className="w-16 h-8 text-sm"
+                className="w-20 h-8 text-sm"
                 placeholder="price"
               />
               <span className="text-xs text-muted-foreground">¢</span>
@@ -260,8 +256,7 @@ const LimitOrderForm = ({
               onClick={handlePlaceSell}
               disabled={!sellValid || submitting}
               size="sm"
-              variant="destructive"
-              className="h-8 font-semibold ml-auto text-xs"
+              className="h-8 font-semibold ml-auto text-xs bg-red-600 hover:bg-red-700 text-white"
             >
               PLACE SELL
             </Button>
