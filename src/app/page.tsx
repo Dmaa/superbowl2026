@@ -105,17 +105,27 @@ const Home = () => {
           <div className="rounded-xl border border-border/50 bg-card p-4">
             <h2 className="mb-3 text-lg font-semibold">Your Positions</h2>
             <div className="space-y-2">
-              {positions.map((pos) => (
-                <div
-                  key={pos.marketId}
-                  className="flex items-center justify-between text-sm"
-                >
-                  <span>{pos.marketName}</span>
-                  <span className="text-muted-foreground">
-                    {pos.shares.toFixed(1)} shares @ {Math.round(pos.avgEntryPrice * 100)}¢
-                  </span>
-                </div>
-              ))}
+              {positions.map((pos) => {
+                const isNo = pos.marketId.endsWith("_no");
+                return (
+                  <div
+                    key={pos.marketId}
+                    className="flex items-center justify-between text-sm gap-2"
+                  >
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className={`shrink-0 rounded px-1 py-0.5 text-[10px] font-semibold ${
+                        isNo ? "bg-red-900/40 text-red-400" : "bg-green-900/40 text-green-400"
+                      }`}>
+                        {isNo ? "NO" : "YES"}
+                      </span>
+                      <span className="truncate">{pos.marketName}</span>
+                    </div>
+                    <span className="text-muted-foreground shrink-0">
+                      {pos.shares.toFixed(1)} shares @ {Math.round(pos.avgEntryPrice * 100)}¢
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

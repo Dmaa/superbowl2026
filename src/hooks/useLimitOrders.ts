@@ -176,12 +176,15 @@ export const useLimitOrders = ({ userId, refreshBalance, refreshPositions }: Use
     async (events: SuperBowlEvent[]) => {
       if (!userId) return;
 
-      // Build price map from all markets across events
+      // Build price map from all markets across events (both Yes and No sides)
       const priceMap = new Map<string, number>();
       for (const event of events) {
         for (const market of event.markets) {
           if (!market.closed) {
             priceMap.set(market.id, parseFloat(market.outcomePrices[0]));
+            if (market.outcomePrices[1]) {
+              priceMap.set(`${market.id}_no`, parseFloat(market.outcomePrices[1]));
+            }
           }
         }
       }

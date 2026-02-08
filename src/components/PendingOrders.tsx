@@ -21,7 +21,9 @@ const PendingOrders = ({ orders, onDelete }: PendingOrdersProps) => {
         Pending Orders
       </h2>
       <div className="space-y-2">
-        {pending.map((order) => (
+        {pending.map((order) => {
+          const isNo = order.marketId.endsWith("_no");
+          return (
           <div
             key={order.id}
             className="flex items-center justify-between gap-3 text-sm"
@@ -35,6 +37,11 @@ const PendingOrders = ({ orders, onDelete }: PendingOrdersProps) => {
                 }`}
               >
                 {order.orderType}
+              </span>
+              <span className={`shrink-0 rounded px-1 py-0.5 text-[10px] font-semibold ${
+                isNo ? "bg-red-900/40 text-red-400" : "bg-green-900/40 text-green-400"
+              }`}>
+                {isNo ? "NO" : "YES"}
               </span>
               <span className="truncate">
                 {order.shares}× {order.marketName}
@@ -59,7 +66,8 @@ const PendingOrders = ({ orders, onDelete }: PendingOrdersProps) => {
               DELETE
             </Button>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );

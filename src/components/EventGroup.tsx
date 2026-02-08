@@ -88,8 +88,10 @@ const EventGroup = ({
               market={market}
               balance={balance}
               position={positions.find((p) => p.marketId === market.id)}
+              noPosition={positions.find((p) => p.marketId === `${market.id}_no`)}
               lockedShares={getLockedShares(market.id)}
-              pendingOrders={pendingOrders.filter((o) => o.marketId === market.id)}
+              noLockedShares={getLockedShares(`${market.id}_no`)}
+              pendingOrders={pendingOrders.filter((o) => o.marketId === market.id || o.marketId === `${market.id}_no`)}
               isExpanded={expandedMarketId === market.id}
               onToggle={() =>
                 setExpandedMarketId(expandedMarketId === market.id ? null : market.id)
