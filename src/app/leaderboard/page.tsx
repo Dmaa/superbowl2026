@@ -88,14 +88,21 @@ const LeaderboardPage = () => {
 
         {/* Table */}
         <div className="rounded-xl border border-border/50 bg-card overflow-hidden">
-          {/* Table header */}
-          <div className="grid grid-cols-[2.5rem_1fr_6rem_5.5rem_5.5rem_3.5rem] md:grid-cols-[2.5rem_1fr_7rem_6.5rem_7rem_4.5rem] gap-2 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          {/* Desktop table header */}
+          <div className="hidden md:grid grid-cols-[2rem_1fr_6.5rem_6rem_6.5rem_3.5rem] gap-3 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
             <span>#</span>
             <span>Player</span>
             <span className="text-right">Portfolio</span>
             <span className="text-right">Cash</span>
             <span className="text-right">Unreal. P/L</span>
             <span className="text-right">Pos.</span>
+          </div>
+
+          {/* Mobile table header */}
+          <div className="grid md:hidden grid-cols-3 gap-2 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <span>Player</span>
+            <span className="text-right">Portfolio</span>
+            <span className="text-right">P/L</span>
           </div>
 
           {/* Rows */}
@@ -108,62 +115,69 @@ const LeaderboardPage = () => {
               const rank = i + 1;
               const pnlPositive = entry.unrealizedPnl >= 0;
 
+              const rankColor =
+                rank === 1
+                  ? "text-yellow-400"
+                  : rank === 2
+                    ? "text-slate-300"
+                    : rank === 3
+                      ? "text-amber-600"
+                      : "text-muted-foreground";
+
+              const borderColor =
+                rank === 1
+                  ? "border-l-yellow-400"
+                  : rank === 2
+                    ? "border-l-slate-300"
+                    : rank === 3
+                      ? "border-l-amber-700"
+                      : "";
+
+              const rowBg = i % 2 === 0 ? "bg-card" : "bg-muted/10";
+
               return (
-                <div
-                  key={`${entry.displayName}-${i}`}
-                  className={`grid grid-cols-[2.5rem_1fr_6rem_5.5rem_5.5rem_3.5rem] md:grid-cols-[2.5rem_1fr_7rem_6.5rem_7rem_4.5rem] gap-2 px-4 py-3 text-sm items-center ${
-                    i % 2 === 0 ? "bg-card" : "bg-muted/10"
-                  } ${rank <= 3 ? "border-l-2" : ""} ${
-                    rank === 1
-                      ? "border-l-yellow-400"
-                      : rank === 2
-                        ? "border-l-slate-300"
-                        : rank === 3
-                          ? "border-l-amber-700"
-                          : ""
-                  }`}
-                >
-                  {/* Rank */}
-                  <span
-                    className={`font-bold ${
-                      rank === 1
-                        ? "text-yellow-400"
-                        : rank === 2
-                          ? "text-slate-300"
-                          : rank === 3
-                            ? "text-amber-600"
-                            : "text-muted-foreground"
-                    }`}
+                <div key={`${entry.displayName}-${i}`}>
+                  {/* Desktop row */}
+                  <div
+                    className={`hidden md:grid grid-cols-[2rem_1fr_6.5rem_6rem_6.5rem_3.5rem] gap-3 px-4 py-3 text-sm items-center ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
                   >
-                    {rank}
-                  </span>
+                    <span className={`font-bold ${rankColor}`}>{rank}</span>
+                    <span className="font-medium truncate">{entry.displayName}</span>
+                    <span className="text-right font-bold text-green-400 font-mono">
+                      ${entry.totalValue.toFixed(2)}
+                    </span>
+                    <span className="text-right text-muted-foreground font-mono">
+                      ${entry.balance.toFixed(2)}
+                    </span>
+                    <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
+                      {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                    </span>
+                    <span className="text-right text-muted-foreground">
+                      {entry.positionCount}
+                    </span>
+                  </div>
 
-                  {/* Player name */}
-                  <span className="font-medium truncate">{entry.displayName}</span>
-
-                  {/* Portfolio value */}
-                  <span className="text-right font-bold text-green-400 font-mono">
-                    ${entry.totalValue.toFixed(2)}
-                  </span>
-
-                  {/* Cash */}
-                  <span className="text-right text-muted-foreground font-mono">
-                    ${entry.balance.toFixed(2)}
-                  </span>
-
-                  {/* Unrealized P/L */}
-                  <span
-                    className={`text-right font-mono font-semibold ${
-                      pnlPositive ? "text-green-400" : "text-red-400"
-                    }`}
+                  {/* Mobile row */}
+                  <div
+                    className={`md:hidden px-4 py-3 text-sm ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
                   >
-                    {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
-                  </span>
-
-                  {/* Position count */}
-                  <span className="text-right text-muted-foreground">
-                    {entry.positionCount}
-                  </span>
+                    <div className="grid grid-cols-3 gap-2 items-center">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className={`font-bold shrink-0 ${rankColor}`}>{rank}</span>
+                        <span className="font-medium truncate">{entry.displayName}</span>
+                      </div>
+                      <span className="text-right font-bold text-green-400 font-mono">
+                        ${entry.totalValue.toFixed(2)}
+                      </span>
+                      <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
+                        {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="flex gap-3 mt-1 ml-6 text-xs text-muted-foreground">
+                      <span>Cash: ${entry.balance.toFixed(2)}</span>
+                      <span>{entry.positionCount} position{entry.positionCount !== 1 ? "s" : ""}</span>
+                    </div>
+                  </div>
                 </div>
               );
             })
