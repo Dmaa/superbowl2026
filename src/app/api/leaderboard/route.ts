@@ -141,8 +141,8 @@ export const GET = async () => {
       };
     });
 
-    // Sort by total value descending
-    leaderboard.sort((a, b) => b.totalValue - a.totalValue);
+    // Sort by cash balance descending
+    leaderboard.sort((a, b) => b.balance - a.balance);
 
     return NextResponse.json(leaderboard);
   } catch {
