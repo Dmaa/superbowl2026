@@ -12,7 +12,7 @@ interface LeaderboardEntry {
   positionValue: number;
   unrealizedPnl: number;
   totalValue: number;
-  positionCount: number;
+
 }
 
 const POLL_INTERVAL = 30_000;
@@ -89,13 +89,12 @@ const LeaderboardPage = () => {
         {/* Table */}
         <div className="rounded-xl border border-border/50 bg-card overflow-hidden">
           {/* Desktop table header */}
-          <div className="hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem_3.5rem] gap-3 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+          <div className="hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem] gap-3 px-4 py-3 border-b border-border/30 text-xs font-medium text-muted-foreground uppercase tracking-wider">
             <span>#</span>
             <span>Player</span>
             <span className="text-right">Cash</span>
             <span className="text-right">Portfolio</span>
             <span className="text-right">Unreal. P/L</span>
-            <span className="text-right">Pos.</span>
           </div>
 
           {/* Mobile table header */}
@@ -138,7 +137,7 @@ const LeaderboardPage = () => {
                 <div key={`${entry.displayName}-${i}`}>
                   {/* Desktop row */}
                   <div
-                    className={`hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem_3.5rem] gap-3 px-4 py-3 text-sm items-center ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
+                    className={`hidden md:grid grid-cols-[2rem_1fr_6.5rem_6.5rem_6.5rem] gap-3 px-4 py-3 text-sm items-center ${rowBg} ${rank <= 3 ? "border-l-2" : ""} ${borderColor}`}
                   >
                     <span className={`font-bold ${rankColor}`}>{rank}</span>
                     <span className="font-medium truncate">{entry.displayName}</span>
@@ -150,9 +149,6 @@ const LeaderboardPage = () => {
                     </span>
                     <span className={`text-right font-mono font-semibold ${pnlPositive ? "text-green-400" : "text-red-400"}`}>
                       {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
-                    </span>
-                    <span className="text-right text-muted-foreground">
-                      {entry.positionCount}
                     </span>
                   </div>
 
@@ -174,7 +170,6 @@ const LeaderboardPage = () => {
                       <span className={pnlPositive ? "text-green-400/70" : "text-red-400/70"}>
                         P/L: {pnlPositive ? "+" : ""}${entry.unrealizedPnl.toFixed(2)}
                       </span>
-                      <span>{entry.positionCount} pos.</span>
                     </div>
                   </div>
                 </div>
