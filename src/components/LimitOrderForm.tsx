@@ -112,8 +112,8 @@ const LimitOrderForm = ({
                   {isNo ? "NO" : "YES"}
                 </span>
                 <span className="text-muted-foreground">
-                  {order.shares}× @ {order.orderType === "BUY" ? "\u2264" : "\u2265"}
-                  {Math.round(order.limitPrice * 100)}\u00A2
+                  {order.shares}× @ {order.orderType === "BUY" ? "≤" : "≥"}
+                  {Math.round(order.limitPrice * 100)}¢
                 </span>
                 {order.escrowedAmount > 0 && (
                   <span className="text-muted-foreground">
