@@ -19,6 +19,7 @@ const BetCard = ({ market, balance, position, onBuy, onSell }: BetCardProps) => 
   const [buyShares, setBuyShares] = useState("10");
   const [sellShares, setSellShares] = useState("");
 
+  const outcomeName = market.outcomes[0] ?? "Yes";
   const yesPrice = parseFloat(market.outcomePrices[0]);
   const yesCents = Math.round(yesPrice * 100);
   const impliedOdds = Math.round(yesPrice * 100);
@@ -87,7 +88,7 @@ const BetCard = ({ market, balance, position, onBuy, onSell }: BetCardProps) => 
             disabled={buyDisabled}
             className="bg-green-600 hover:bg-green-700 text-white font-semibold ml-auto"
           >
-            BUY YES
+            BUY {outcomeName.toUpperCase()}
           </Button>
         </div>
 

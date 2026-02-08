@@ -31,6 +31,7 @@ const CompactMarketRow = ({
   const [flash, setFlash] = useState(false);
 
   const label = market.groupItemTitle || market.question;
+  const outcomeName = market.outcomes[0] ?? "Yes";
   const yesPrice = parseFloat(market.outcomePrices[0]);
   const yesCents = Math.round(yesPrice * 100);
 
@@ -127,7 +128,7 @@ const CompactMarketRow = ({
               size="sm"
               className="h-8 bg-green-600 hover:bg-green-700 text-white font-semibold ml-auto"
             >
-              BUY YES
+              BUY {outcomeName.toUpperCase()}
             </Button>
           </div>
 
