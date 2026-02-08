@@ -132,7 +132,7 @@ const LoginPage = () => {
                 <Input
                   id="display-name"
                   type="text"
-                  placeholder="e.g. BigBetBob"
+                  placeholder="e.g. BeatTheOddsBarry"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handlePlay()}
